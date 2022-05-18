@@ -39,6 +39,7 @@ with os.scandir('Data/') as entries:
 
         df = pd.read_csv(entry, skiprows=ignore_number+1, sep=",", header=None)
 
+        df[1] -= df[1][0]
         
         # Finding point for which mass > 5 g (or other treshold)
         mass_point = 0

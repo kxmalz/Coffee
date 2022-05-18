@@ -13,7 +13,9 @@ plt.rcParams["font.serif"] = ["Times New Roman"] + plt.rcParams["font.serif"]
 plt.rcParams['mathtext.fontset'] = 'cm'
 
 
-plt.figure(0)
+fig, ax1 = plt.subplots(2, figsize=(10,10))
+
+plt.style.use('seaborn-dark-palette')
 
 with os.scandir('Data/') as entries:
     for entry in entries:
@@ -34,6 +36,8 @@ with os.scandir('Data/') as entries:
         dose = float(dose[:2] + '.' + dose[3:])
 
         df = pd.read_csv(entry, skiprows=ignore_number+1, sep=",", header=None)
+        
+        df[1] -= df[1][0]
 
         mass_point = 0
         for i in range(len(df[1])):
@@ -48,20 +52,27 @@ with os.scandir('Data/') as entries:
         
         dp = df.iloc[mass_point : (len(df[0]) - 30)][3].mean()
 
-        plt.style.use('seaborn-dark-palette')
-
-        plt.xlabel('time [s]')
-        plt.ylabel('mass [g]', )
+        ax1[0].set_xlabel('time [s]')
+        ax1[1].set_xlabel('time [s]')
+        ax1[0].set_ylabel('Mass difference [g]', )
+        ax1[1].set_ylabel('Cup mass [g]', )
         
         #ax1[0].plot(df[0], df[1], color='red')
         #ax1[0].plot(df[0], -df[2], color='yellow')
         
-        plt.plot(1e-3 * df[0], (-df[1]-df[2]).rolling(window = 5).mean(), label = 'Q: ' + str(round(1e3 * fit[0], 2)))
+        ax1[0].plot(1e-3 * df[0], (-df[1]-df[2]).rolling(window = 20).mean(), label = 'Q: ' + str(round(1e3 * fit[0], 2)))
+        
+        ax1[1].plot(1e-3 * df[0], df[1].rolling(window = 20).mean(), label = 'Q: ' + str(round(1e3 * fit[0], 2)))
         
         #plt.plot(df[0], fit[0] * df[0] + fit[1], color = 'black', linewidth = 3, alpha = 0.3)
-
+        
         color = 'tab:blue'
-        plt.grid()
-        plt.legend()
-        plt.savefig('Plots/collective_plot.png')
+
+ax1[0].grid()
+ax1[1].grid()
+ax1[0].set_title('Mass difference')
+ax1[1].set_title('Mass in the cup')
+ax1[0].legend()
+ax1[1].legend()
+plt.savefig('Plots/collective_plot.png')
 
