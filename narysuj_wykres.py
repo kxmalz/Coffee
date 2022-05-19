@@ -1,6 +1,9 @@
-import serial
-import time
 import sys
+sys.path.append("/home/kxmalz/.local/lib/python3.8/site-packages")
+import serial
+import numpy
+#numpy.random.bit_generator = numpy.random._bit_generator
+import time
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -14,7 +17,7 @@ grind = input("Grind setting: ")
 if grind == "":
     grind = '5_00'
 
-ser = serial.Serial('COM4', 9600, timeout=0) 
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0) 
 
 data = b''
 
@@ -31,8 +34,8 @@ while True:
     data=ser.readline()
     if data != b'':
 
-        print(data)
+        print(data, end = '\r')
         f = open('./Data/'+moment+'dose_'+dose+'_on_'+grind+'.csv', 'a')
-        f.write(data.decode('ascii').replace("\n",""))
+        f.write(data.decode('utf8').replace("\n",""))
         f.close()
 

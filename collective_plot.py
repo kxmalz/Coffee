@@ -1,3 +1,5 @@
+import sys
+sys.path.append("/home/kxmalz/.local/lib/python3.8/site-packages")
 import serial
 import time
 import os
