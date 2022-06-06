@@ -40,11 +40,18 @@ with os.scandir('Data/') as entries:
         df = pd.read_csv(entry, skiprows=ignore_number+1, sep=",", header=None)
         
         df[1] -= df[1][0]
+        df[2] -= df[2][0]
 
         mass_point = 0
         for i in range(len(df[1])):
         	if df.iloc[i:i+20][1].mean() > 5.0:
         		mass_point = i
+        		break
+        		
+        pressure_point = 0
+        for i in range(len(df[1])):
+        	if df.iloc[i:i+20][3].mean() > 1000.0:
+        		pressure_point = i
         		break
         
         time_trimmed = df.iloc[mass_point : (len(df[0]) - 30)][0]
@@ -62,9 +69,9 @@ with os.scandir('Data/') as entries:
         #ax1[0].plot(df[0], df[1], color='red')
         #ax1[0].plot(df[0], -df[2], color='yellow')
         
-        ax1[0].plot(1e-3 * df[0], (-df[1]-df[2]).rolling(window = 20).mean(), label = 'Q: ' + str(round(1e3 * fit[0], 2)))
+        ax1[0].plot(1e-3 * (df[0] - df[0][pressure_point]), (-df[1]-df[2]).rolling(window = 20).mean(), label = 'Q: ' + str(round(1e3 * fit[0], 2)))
         
-        ax1[1].plot(1e-3 * df[0], df[1].rolling(window = 20).mean(), label = 'Q: ' + str(round(1e3 * fit[0], 2)))
+        ax1[1].plot(1e-3 * (df[0] - df[0][pressure_point]), df[1].rolling(window = 20).mean(), label = 'Q: ' + str(round(1e3 * fit[0], 2)))
         
         #plt.plot(df[0], fit[0] * df[0] + fit[1], color = 'black', linewidth = 3, alpha = 0.3)
         

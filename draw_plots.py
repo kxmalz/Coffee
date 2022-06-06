@@ -86,7 +86,7 @@ with os.scandir('Data/') as entries:
         
         ax1[1].plot(df[0], df[1], color='red',label='Cup')
         ax1[1].plot(df[0], -df[2], color='yellow',label='Water container')
-        ax1[1].plot(df[0], -df[1]-df[2], color = 'green', label = 'Difference')
+        ax1[1].plot(df[0], (-df[1]-df[2]).rolling(window = 5).mean(), color = 'green', label = 'Difference (moving mean)')
         
         ax1[1].plot(df[0], 1e3 * fit[0] * df[0] + fit[1], color = 'black', linewidth = 3, alpha = 0.3, label = 'Fit')
 
@@ -96,14 +96,15 @@ with os.scandir('Data/') as entries:
         ax1[0].grid()
         plt.grid()
         ax1[1].set_ylim(-10,100)
-        ax1[1].set_xlim(0,35)
-        ax1[0].set_xlim(0,35)
+        ax1[1].set_xlim(0,50)
+        ax1[0].set_xlim(0,50)
         ax1[1].legend(loc = 2)
         ax1[0].legend(loc = 4)
         plt.title('Grind: ' + str(grind) + '\tDose: ' + str(dose) + ' g\t$Q$: ' 
         	+ str(round(1e3 * fit[0], 2)) + ' g/s\t$\Delta p:$ ' + str(round(dp, 2))
         	+ ' hPa\tk: ' + str(round(1e5 * fit[0] / dp, 2)) + ' * $10^-5$ g / s * hPa')
         plt.savefig('Plots/'+str(entry.name[:len(entry.name) - 4])+'.png')
+        #plt.show()
 
 plt.figure(50)
 
