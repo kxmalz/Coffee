@@ -1,0 +1,5 @@
+keyboard
+pyserial
+numpy
+matplotlib
+pandas
