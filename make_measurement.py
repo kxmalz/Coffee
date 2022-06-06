@@ -1,5 +1,5 @@
 import sys
-import serial
+import serial # install 'pyserial' only!
 import time
 import os
 import argparse
