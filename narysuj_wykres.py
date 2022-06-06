@@ -1,4 +1,5 @@
 import sys
+#delete next line on Windows
 sys.path.append("/home/kxmalz/.local/lib/python3.8/site-packages")
 import serial
 import numpy
