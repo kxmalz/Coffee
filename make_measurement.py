@@ -56,9 +56,10 @@ try:
                         print(f'{buf.decode("utf8")}', end="")
                         if "Pressure" in buf.decode("utf8"):  # Detect Arduino reset
                             f.truncate(0)
+                            f.seek(0)
                             data = b""
                             buf = b""
-                        f.write(buf.decode("utf8"))
+                        f.write(buf.decode("utf8").replace('\x00','')) # Remove null bytes
                         data += buf
                         buf = b""
                 except UnicodeDecodeError as e:
