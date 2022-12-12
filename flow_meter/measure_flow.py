@@ -4,6 +4,8 @@ import time
 import argparse
 import query_yes_no
 
+import json
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -38,7 +40,11 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print("Proceeding")
-    ser = serial.Serial("COM5", 9600, timeout=0)
+
+    with open('device_config.json', "r") as config_file:
+         device_config = json.load(config_file)
+
+    ser = serial.Serial(device_config["serial_port_path"], 9600, timeout=0)
     payload = b""
     buf = b""
     data = b""
@@ -46,7 +52,7 @@ if __name__ == "__main__":
     print("Press [CTRL+C] to stop recording and exit.")
 
 try:
-    with open("./Data/" + fname, "w") as f:
+    with open("./data/" + fname, "w") as f:
         while True:
             payload = ser.readline()
             if payload != b"":
@@ -82,7 +88,7 @@ print(data.decode("utf8"))
 src = data.decode("utf8")
 
 def line_to_list(line):
-    return [float(x) for x in line.split(',')]    
+    return [float(x) for x in line.split(',')]
 arr = np.array([line_to_list(line) for line in src.split('\n') if line != ''])
 
 timestamps = arr[:,0]
