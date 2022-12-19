@@ -1,16 +1,17 @@
+#include <DFRobot_HX711_I2C.h>
+
 /*
  * Pin configuration
- * Analog:
- * 4 - pressure
- * 1 - flow left group
- * 2 - flow right group
+ * A0 - flow meter signal (left group - gray wire)
+ * A3 - pressure sensor signal (yellow wire)
+ * 
+ * 5V - all red wires
+ * GND - all black / brown wires
  * 
  */
 
-//#include <DFRobot_HX711_I2C.h>
-
-//DFRobot_HX711_I2C MyScale1( &Wire, /*addr=*/ 0x64);
-//DFRobot_HX711_I2C MyScale2( &Wire, /*addr=*/ 0x65);
+DFRobot_HX711_I2C MyScale1( &Wire, /*addr=*/ 0x65);
+//DFRobot_HX711_I2C MyScale2( &Wire, /*addr=*/ 0x64);
 
 // looping control
 const unsigned long print_window_micros = 200e3;
@@ -41,15 +42,17 @@ float weight_1 = 0;
 float weight_2 = 0;
 
 void setup() {
-
     Serial.begin(9600);
+    Serial.println("Device restarting");
     
-    /* 
+    Serial.println("Initializing scales");    
     while (!MyScale1.begin()) 
     {
-        Serial.println("The initialization of the chip is failed, please confirm whether the chip connection is correct");
-        delay(1000);
+      Serial.println("Scales failed to intialize, wrong port number?");
+      delay(1000);
     }
+
+    /*
     while (!MyScale2.begin()) 
     {
         Serial.println("The initialization of the chip is failed, please confirm whether the chip connection is correct");
@@ -61,7 +64,7 @@ void setup() {
     */
 
     //pressure sensor
-    Serial.println("BOARD IS RESTARTING");
+    Serial.println("READY FOR MEASUREMENT");
     Serial.println("");
     Serial.println("");
     Serial.println("Pressure, weight and flow measurements");
@@ -91,17 +94,20 @@ void loop() {
             }
 
             // pressure
-            pressure_signal_reading = (5.0 / 1024) * analogRead(A5);
+            pressure_signal_reading = (5.0 / 1024) * analogRead(A3);
             current_pressure = (pressure_signal_reading - voltage_offset) * pressure_voltage_slope;
         }
     }
+
+    // weight
+    weight_1 = MyScale1.readWeight();
 
     // printing
     Serial.print(
         "[" 
         + String(millis())
         + ",\t"
-        + String(0.0,1)
+        + String(weight_1,1)
         + ",\t"
         + String(0.0,1)
         + ",\t"
