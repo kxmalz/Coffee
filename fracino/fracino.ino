@@ -51,6 +51,13 @@ void setup() {
       Serial.println("Scales failed to intialize, wrong port number?");
       delay(1000);
     }
+    Serial.println((
+    "Scales calibration value: "  
+    + String(MyScale1.getCalibration())
+    + "\n"
+    ));
+
+    MyScale1.setCalibration(2037.38);
 
     /*
     while (!MyScale2.begin()) 
@@ -114,8 +121,17 @@ void loop() {
         + String(current_pressure,1)
         + ",\t"
         + String(rising_edges_since_print)
-        + "]\n"
+        + "],\n"
     );
+
+    /*
+    // Use for setting correct value
+    Serial.println((
+    "Scales calibration value: "  
+    + String(MyScale1.getCalibration())
+    + "\n"
+    ));
+    */
 
     last_print_micros = micros();
     measurements_since_print = 0;
