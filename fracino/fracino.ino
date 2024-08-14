@@ -34,7 +34,7 @@ int current_state = -1;
 const float voltage_offset = 0.483;
 const float pressure_voltage_slope = 237.0;
 
-int pressure_signal_reading = -1;
+float pressure_signal_reading = -1;
 float current_pressure = -1;
 
 //scales
